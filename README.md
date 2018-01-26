@@ -17,21 +17,30 @@ minishift addon enable admin-user
 or run the `openshift/setup-minishift.sh` script
 
 # Start minishift with the service-catalog
+```bash
 MINISHIFT_ENABLE_EXPERIMENTAL=y minishift start --service-catalog
+```
 
 # Configure command line environment
+```bash
 eval $(minishift oc-env)
 eval $(minishift docker-env)
 oc login $(minishift ip):8443 -u admin -p admin
 oc whoami
+```
 
 # Launch console app
+```bash
 minishift console
+```
 
 # Create a new project
+```bash
 oc new-project jwt-service-broker
+```
 
 # Service broker deployment
+```bash
 mvn clean package
 
 docker build -f openshift/Dockerfile -t example/jwt-service-broker .
@@ -39,6 +48,7 @@ docker build -f openshift/Dockerfile -t example/jwt-service-broker .
 docker images | grep jwt-service-broker
 
 oc process -f openshift/jwt-service-broker-template.yml --param-file=openshift/params.env | oc create -f -
+```
 
 output should be something like:
 ```bash
@@ -52,18 +62,22 @@ clusterservicebroker "jwt-service-broker" created
 ```
 
 # Clean up
+```bash
 oc delete route jwt-sb-1338
 oc delete deploymentconfig jwt-sb
 oc delete service jwt-sb
 oc delete serviceaccount jwt-sb
 oc delete clusterrolebindings.rbac.authorization.k8s.io jwt-sb
 oc delete clusterservicebrokers jwt-service-broker
+```
 
 or
 
+```bash
 oc delete project jwt-service-broker
 oc delete clusterrolebindings.rbac.authorization.k8s.io jwt-sb
 oc delete clusterservicebrokers jwt-service-broker
+```
 
 # TODO
 * Update template to support the use of https
